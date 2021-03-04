@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
 import numpy as np
 import cv2
 
 # "imread" function is reads the image
-image = cv2.imread('images/human.jpg')
+image = cv2.imread('YOUR_IMAGE_PATH')
 #print(image)
 
 #imageH -> height of image *** imageW -> width of image ------- shape function is output of pixels and rgb size
