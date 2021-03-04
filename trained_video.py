@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 13 21:45:49 2021
-
-@author: Onur
-"""
 
 import numpy as np
 import cv2
 
-
-cap = cv2.VideoCapture("C:/Users/Onur/Desktop/YOLO/trainedVideo/videos/human2.mp4")
-
-
+cap = cv2.VideoCapture("YOUR_VIDEO_PATH")
 
 while True:
     ret, frame = cap.read()
@@ -22,15 +14,13 @@ while True:
     frameH= frame.shape[0]
     frameW=frame.shape[1]
 
-
     frame_blob = cv2.dnn.blobFromImage(frame, 1/255, (416,416), swapRB=True,crop=False)
 
     label = ["face_here"]
 
 #cfg and weeights files to model
-    model = cv2.dnn.readNetFromDarknet("C:/Users/Onur/Desktop/YOLO/trained_model/face_yolov4.cfg",
-                                   "C:/Users/Onur/Desktop/YOLO/trained_model/face_yolov4_last.weights")
-
+    model = cv2.dnn.readNetFromDarknet("YOUR_PATH/trained_model/face_yolov4.cfg",
+                                   "YOUR_PATH/trained_model/face_yolov4_last.weights")
 
 #outputs layers -- conv values
     layers = model.getLayerNames()
@@ -40,19 +30,10 @@ while True:
     
     detectionLayers = model.forward(outputLayer)
 
-
     #NMS
     idsList =[]
     boxesList=[]
     confidenceList=[]
-
-
-
-
-
-
-
-
 
     for detectionLayer in detectionLayers:
         for objectDetection in detectionLayer:
@@ -72,18 +53,13 @@ while True:
                 
                 startX = int(boxCenterX- (boxW/2))
                 startY = int(boxCenterY-(boxH/2))
-                
-                
-                ############NMS###############
+                                
+ ############NMS###############
                 
                 idsList.append(predictedId)
                 confidenceList.append(float(confidenceScore))
                 boxesList.append([startX,startY, int(boxW), int(boxH)])
-            
-            
-
-            
-            
+                                       
     maxIds = cv2.dnn.NMSBoxes(boxesList,confidenceList,0.5,0.4)
              
     for maxId in maxIds:
@@ -102,27 +78,14 @@ while True:
           
         endX = startX + boxW
         endY = startY +boxH
-                
-                
-                
                   
-     #   roi =  frame[startY:endY,startX:endX]
-     #   blur = cv2.GaussianBlur(roi,(65,65),0)
-     #   frame[startY:endY,startX:endX]=blur
+        roi =  frame[startY:endY,startX:endX]
+        blur = cv2.GaussianBlur(roi,(65,65),0)
+        frame[startY:endY,startX:endX]=blur
                 
-                
-                
-                             
         label = "{}: {:.2f}%".format(label, confidenceScore*100)
         print("predicted object {}".format(label))
-                
-                
-                
-        cv2.rectangle(frame, (startX,startY),(endX,endY),(0,0,0),1)
-    
-        #cv2.putText(image,label, (startX,startY-20),cv2.FONT_HERSHEY_SIMPLEX,0.5, (255,0,0),1)
-
-
+                     
     cv2.imshow('Detected',frame)
 
     if cv2.waitKey(1) & 0xFF ==ord("q"):
