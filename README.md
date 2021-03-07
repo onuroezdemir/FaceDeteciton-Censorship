@@ -6,3 +6,4 @@ In this project, it is aimed to teach our machine to detect faces in content and
 
 
 If you need ".weights" file, contact me.
+onur.oezdemir@mail.com
